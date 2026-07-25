@@ -5,7 +5,7 @@ export declare class SkinComponent {
     /** currently selected skin */
     skin?: Emoji['skin'];
     i18n: any;
-    changeSkin: EventEmitter<1 | 2 | 4 | 3 | 5 | 6>;
+    changeSkin: EventEmitter<1 | 4 | 2 | 3 | 5 | 6>;
     opened: boolean;
     skinTones: Emoji['skin'][];
     toggleOpen(): void;

@@ -34119,6 +34119,8 @@ class EmojiComponent {
     constructor() {
         this.setupMouseListeners();
     }
+    unifiedText = null;
+    fluentUrl = null;
     ngOnChanges() {
         if (!this.emoji) {
             return (this.isVisible = false);
@@ -34127,8 +34129,7 @@ class EmojiComponent {
         if (!data) {
             return (this.isVisible = false);
         }
-        // const children = this.children;
-        this.unified = data.native || null;
+        this.unifiedText = data.native || null;
         if (data.custom) {
             this.custom = data.custom;
         }
@@ -34142,30 +34143,26 @@ class EmojiComponent {
             return (this.isVisible = false);
         }
         this.label = [data.native].concat(data.shortNames).filter(Boolean).join(', ');
-        const fluentUrl = this.fluentEmojiUrl;
-        if (fluentUrl && !this.isMissingAsset(data.unified)) {
+        // Verificamos si es una familia compleja con ZWJ que sabemos que no tiene asset
+        const isComplexFamily = data.unified && data.unified.includes('200d');
+        if (data.unified && !isComplexFamily) {
+            const codigoUnificado = data.unified.toLowerCase();
+            this.fluentUrl = `assets/fluent-emoji/${codigoUnificado}.webp`;
+            this.isNative = false;
             this.style = {
                 width: `${this.size}px`,
                 height: `${this.size}px`,
                 display: 'inline-block',
-                backgroundImage: `url(${fluentUrl})`,
+                backgroundImage: `url(${this.fluentUrl})`,
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
             };
         }
         else {
-            // --- FALLBACK NATIVO ---
-            // Si no hay webp local, mostramos el emoji nativo de texto con el tamaño correcto
+            // Fallback nativo inmediato para casos complejos
             this.isNative = true;
-            this.style = {
-                fontSize: `${this.size}px`,
-                display: 'inline-block',
-                width: `${this.size}px`,
-                height: `${this.size}px`,
-                textAlign: 'center',
-                lineHeight: `${this.size}px`
-            };
+            this.fluentUrl = null;
         }
         return (this.isVisible = true);
     }
@@ -34238,8 +34235,11 @@ class EmojiComponent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <ng-content></ng-content>
+        <span style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+          <span *ngIf="!isNative && fluentUrl; else nativeText" [ngStyle]="style"></span>
+          <ng-template #nativeText>
+            <span [style.font-size.px]="size">{{ unifiedText }}</span>
+          </ng-template>
         </span>
       </button>
     </ng-template>
@@ -34253,8 +34253,11 @@ class EmojiComponent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <ng-content></ng-content>
+        <span style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+          <span *ngIf="!isNative && fluentUrl; else nativeText" [ngStyle]="style"></span>
+          <ng-template #nativeText>
+            <span [style.font-size.px]="size">{{ unifiedText }}</span>
+          </ng-template>
         </span>
       </span>
     </ng-template>
@@ -34276,8 +34279,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.5", ngImpor
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <ng-content></ng-content>
+        <span style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+          <span *ngIf="!isNative && fluentUrl; else nativeText" [ngStyle]="style"></span>
+          <ng-template #nativeText>
+            <span [style.font-size.px]="size">{{ unifiedText }}</span>
+          </ng-template>
         </span>
       </button>
     </ng-template>
@@ -34291,8 +34297,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.5", ngImpor
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <ng-content></ng-content>
+        <span style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+          <span *ngIf="!isNative && fluentUrl; else nativeText" [ngStyle]="style"></span>
+          <ng-template #nativeText>
+            <span [style.font-size.px]="size">{{ unifiedText }}</span>
+          </ng-template>
         </span>
       </span>
     </ng-template>

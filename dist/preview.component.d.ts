@@ -15,7 +15,7 @@ export declare class PreviewComponent implements OnChanges {
     emojiSheetSize?: Emoji['sheetSize'];
     emojiBackgroundImageFn?: Emoji['backgroundImageFn'];
     emojiImageUrlFn?: Emoji['imageUrlFn'];
-    skinChange: EventEmitter<1 | 2 | 4 | 3 | 5 | 6>;
+    skinChange: EventEmitter<1 | 4 | 2 | 3 | 5 | 6>;
     emojiData: Partial<EmojiData>;
     listedEmoticons?: string[];
     constructor(ref: ChangeDetectorRef, emojiService: EmojiService);

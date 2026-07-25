@@ -55,7 +55,7 @@ export declare class PickerComponent implements OnInit, OnDestroy {
     recent?: string[];
     emojiClick: EventEmitter<any>;
     emojiSelect: EventEmitter<any>;
-    skinChange: EventEmitter<1 | 2 | 4 | 3 | 5 | 6>;
+    skinChange: EventEmitter<1 | 4 | 2 | 3 | 5 | 6>;
     private scrollRef;
     previewRef?: PreviewComponent;
     searchRef?: SearchComponent;

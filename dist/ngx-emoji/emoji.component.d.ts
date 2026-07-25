@@ -71,6 +71,8 @@ export declare class EmojiComponent implements OnChanges, Emoji, OnDestroy {
     private readonly ngZone;
     private readonly emojiService;
     constructor();
+    unifiedText?: string | null;
+    fluentUrl: string | null;
     ngOnChanges(): boolean;
     private isMissingAsset;
     ngOnDestroy(): void;
@@ -78,5 +80,5 @@ export declare class EmojiComponent implements OnChanges, Emoji, OnDestroy {
     getSanitizedData(): EmojiData;
     private setupMouseListeners;
     static ɵfac: i0.ɵɵFactoryDeclaration<EmojiComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<EmojiComponent, "ngx-emoji", never, { "skin": { "alias": "skin"; "required": false; }; "set": { "alias": "set"; "required": false; }; "sheetSize": { "alias": "sheetSize"; "required": false; }; "isNative": { "alias": "isNative"; "required": false; }; "forceSize": { "alias": "forceSize"; "required": false; }; "tooltip": { "alias": "tooltip"; "required": false; }; "size": { "alias": "size"; "required": false; }; "emoji": { "alias": "emoji"; "required": false; }; "fallback": { "alias": "fallback"; "required": false; }; "hideObsolete": { "alias": "hideObsolete"; "required": false; }; "sheetRows": { "alias": "sheetRows"; "required": false; }; "sheetColumns": { "alias": "sheetColumns"; "required": false; }; "useButton": { "alias": "useButton"; "required": false; }; "backgroundImageFn": { "alias": "backgroundImageFn"; "required": false; }; "imageUrlFn": { "alias": "imageUrlFn"; "required": false; }; }, { "emojiOver": "emojiOver"; "emojiOverOutsideAngular": "emojiOverOutsideAngular"; "emojiLeave": "emojiLeave"; "emojiLeaveOutsideAngular": "emojiLeaveOutsideAngular"; "emojiClick": "emojiClick"; "emojiClickOutsideAngular": "emojiClickOutsideAngular"; }, never, ["*", "*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<EmojiComponent, "ngx-emoji", never, { "skin": { "alias": "skin"; "required": false; }; "set": { "alias": "set"; "required": false; }; "sheetSize": { "alias": "sheetSize"; "required": false; }; "isNative": { "alias": "isNative"; "required": false; }; "forceSize": { "alias": "forceSize"; "required": false; }; "tooltip": { "alias": "tooltip"; "required": false; }; "size": { "alias": "size"; "required": false; }; "emoji": { "alias": "emoji"; "required": false; }; "fallback": { "alias": "fallback"; "required": false; }; "hideObsolete": { "alias": "hideObsolete"; "required": false; }; "sheetRows": { "alias": "sheetRows"; "required": false; }; "sheetColumns": { "alias": "sheetColumns"; "required": false; }; "useButton": { "alias": "useButton"; "required": false; }; "backgroundImageFn": { "alias": "backgroundImageFn"; "required": false; }; "imageUrlFn": { "alias": "imageUrlFn"; "required": false; }; }, { "emojiOver": "emojiOver"; "emojiOverOutsideAngular": "emojiOverOutsideAngular"; "emojiLeave": "emojiLeave"; "emojiLeaveOutsideAngular": "emojiLeaveOutsideAngular"; "emojiClick": "emojiClick"; "emojiClickOutsideAngular": "emojiClickOutsideAngular"; }, never, never, true, never>;
 }
