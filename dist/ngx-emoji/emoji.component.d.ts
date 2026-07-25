@@ -24,6 +24,7 @@ export interface EmojiEvent {
     $event: Event;
 }
 export declare class EmojiComponent implements OnChanges, Emoji, OnDestroy {
+    get fluentEmojiUrl(): string | null;
     skin: Emoji['skin'];
     set: Emoji['set'];
     sheetSize: Emoji['sheetSize'];

@@ -55,8 +55,11 @@ export interface EmojiEvent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style">
-          <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
+        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+          <img *ngIf="fluentEmojiUrl; else nativeTpl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
+          <ng-template #nativeTpl>
+            <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
+          </ng-template>
           <ng-content></ng-content>
         </span>
       </button>
@@ -84,6 +87,15 @@ export interface EmojiEvent {
   imports: [CommonModule],
 })
 export class EmojiComponent implements OnChanges, Emoji, OnDestroy {
+
+  get fluentEmojiUrl(): string | null {
+    const data = this.getData();
+    if (!data || !data.unified) return null;
+    const codigoUnificado = data.unified.toLowerCase();
+    return `assets/fluent-emoji/${codigoUnificado}.webp`;
+  }
+
+
   @Input() skin: Emoji['skin'] = 1;
   @Input() set: Emoji['set'] = 'apple';
   @Input() sheetSize: Emoji['sheetSize'] = 64;

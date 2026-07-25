@@ -34034,6 +34034,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.5", ngImpor
         }], ctorParameters: function () { return []; } });
 
 class EmojiComponent {
+    get fluentEmojiUrl() {
+        const data = this.getData();
+        if (!data || !data.unified)
+            return null;
+        const codigoUnificado = data.unified.toLowerCase();
+        return `assets/fluent-emoji/${codigoUnificado}.webp`;
+    }
     skin = 1;
     set = 'apple';
     sheetSize = 64;
@@ -34215,8 +34222,11 @@ class EmojiComponent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style">
-          <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
+        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+          <img *ngIf="fluentEmojiUrl; else nativeTpl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
+          <ng-template #nativeTpl>
+            <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
+          </ng-template>
           <ng-content></ng-content>
         </span>
       </button>
@@ -34255,8 +34265,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.5", ngImpor
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style">
-          <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
+        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+          <img *ngIf="fluentEmojiUrl; else nativeTpl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
+          <ng-template #nativeTpl>
+            <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
+          </ng-template>
           <ng-content></ng-content>
         </span>
       </button>
