@@ -1,3 +1,4 @@
+// modificacion 7
 import {
   ChangeDetectionStrategy,
   Component,
@@ -55,7 +56,7 @@ export interface EmojiEvent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="fluentEmojiStyle || style">
+        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
           <ng-content></ng-content>
         </span>
       </button>
@@ -70,7 +71,7 @@ export interface EmojiEvent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="fluentEmojiStyle || style">
+        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
           <ng-content></ng-content>
         </span>
       </span>
@@ -191,7 +192,18 @@ export class EmojiComponent implements OnChanges, Emoji, OnDestroy {
 
     this.label = [data.native].concat(data.shortNames).filter(Boolean).join(', ');
 
-    if (this.isNative && data.unified && data.native) {
+    const fluentUrl = this.fluentEmojiUrl;
+    if (fluentUrl) {
+      this.style = {
+        width: `${this.size}px`,
+        height: `${this.size}px`,
+        display: 'inline-block',
+        backgroundImage: `url(${fluentUrl})`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+      };
+    } else if (this.isNative && data.unified && data.native) {
       // hide older emoji before the split into gendered emoji
       this.style = { fontSize: `${this.size}px` };
 
