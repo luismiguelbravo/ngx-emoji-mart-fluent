@@ -55,8 +55,7 @@ export interface EmojiEvent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <img *ngIf="fluentEmojiUrl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
+        <span [ngStyle]="fluentEmojiStyle || style">
           <ng-content></ng-content>
         </span>
       </button>
@@ -71,8 +70,7 @@ export interface EmojiEvent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <img *ngIf="fluentEmojiUrl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
+        <span [ngStyle]="fluentEmojiStyle || style">
           <ng-content></ng-content>
         </span>
       </span>
@@ -90,6 +88,20 @@ export class EmojiComponent implements OnChanges, Emoji, OnDestroy {
     if (!data || !data.unified) return null;
     const codigoUnificado = data.unified.toLowerCase();
     return `assets/fluent-emoji/${codigoUnificado}.webp`;
+  }
+
+  get fluentEmojiStyle(): any {
+    const url = this.fluentEmojiUrl;
+    if (!url) return null;
+    return {
+      width: `${this.size}px`,
+      height: `${this.size}px`,
+      display: 'inline-block',
+      backgroundImage: `url(${url})`,
+      backgroundSize: 'contain',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+    };
   }
 
 
