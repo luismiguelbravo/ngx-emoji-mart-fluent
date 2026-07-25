@@ -221,14 +221,14 @@ export class EmojiComponent implements OnChanges, Emoji, OnDestroy {
 
   private isMissingAsset(unified?: string): boolean {
     if (!unified) return true;
-
-    // Las secuencias complejas de familias con ZWJ (como man-man-girl-boy)
-    // o unificados muy largos que superen cierta complejidad suelen fallar.
-    // También puedes incluir un listado manual si lo prefieres.
-    const isComplexFamily = unified.includes('200d');
-    const isFlag = unified.startsWith('1f1e6') || unified.includes('-1f1');
-
-    return isComplexFamily || isFlag;
+    const lowerUnified = unified.toLowerCase();
+    // 1. Familias complejas con ZWJ
+    const isComplexFamily = lowerUnified.includes('200d');
+    // 2. Banderas nacionales de doble letra (ej. 1f1e7-1f1f1, 1f1e8-1f1f5, etc.)
+    const isRegionFlag = /^[1f1e0-1f1ff]-[1f1e0-1f1ff]$/.test(lowerUnified) || lowerUnified.includes('1f1e');
+    // 3. Banderas regionales especiales / sub-nacionales (Inglaterra, Escocia, Gales con e00...)
+    const isSubNationFlag = lowerUnified.startsWith('1f3f4') || lowerUnified.includes('e00');
+    return isComplexFamily || isRegionFlag || isSubNationFlag;
   }
 
 
