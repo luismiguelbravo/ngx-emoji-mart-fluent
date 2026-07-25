@@ -229,16 +229,38 @@ unifiedText?: string | null = null;
 
 
 
-  private isMissingAsset(unified?: string): boolean {
+private isMissingAsset(unified?: string): boolean {
     if (!unified) return true;
     const lowerUnified = unified.toLowerCase();
-    // 1. Familias complejas con ZWJ
-    const isComplexFamily = lowerUnified.includes('200d');
-    // 2. Banderas nacionales de doble letra (ej. 1f1e7-1f1f1, 1f1e8-1f1f5, etc.)
-    const isRegionFlag = /^[1f1e0-1f1ff]-[1f1e0-1f1ff]$/.test(lowerUnified) || lowerUnified.includes('1f1e');
-    // 3. Banderas regionales especiales / sub-nacionales (Inglaterra, Escocia, Gales con e00...)
-    const isSubNationFlag = lowerUnified.startsWith('1f3f4') || lowerUnified.includes('e00');
-    return isComplexFamily || isRegionFlag || isSubNationFlag;
+
+    // Listado exacto de los unificados que sabemos que no tienen .webp local
+    const missingAssets = new Set([
+      '1f468-200d-1f468-200d-1f467-200d-1f466',
+      '1f469-200d-1f469-200d-1f467-200d-1f466',
+      '1f1e7-1f1f1',
+      '1f1e7-1f1f6',
+      '1f1e7-1f1fb',
+      '1f1e8-1f1f5',
+      '1f1e9-1f1ec',
+      '1f1ea-1f1e6',
+      '1f1f2-1f1eb',
+      '1f1ed-1f1f2',
+      '1f1f7-1f1ea',
+      '1f1f8-1f1ef',
+      '1f1f9-1f1e9',
+      '1f1f9-1f1eb',
+      '1f1fa-1f1f2',
+      '1f3f4-e0067-e0062-e0065-e006e-e0067-e007f', // Inglaterra
+      '1f3f4-e0067-e0062-e0073-e0063-e0074-e007f', // Escocia
+      '1f3f4-e0067-e0062-e0077-e006c-e0073-e007f'  // Gales
+    ]);
+
+    if (missingAssets.has(lowerUnified)) {
+      return true;
+    }
+
+    // Patrón genérico por si aparece alguna otra variante con ZWJ
+    return lowerUnified.includes('200d');
   }
 
 
