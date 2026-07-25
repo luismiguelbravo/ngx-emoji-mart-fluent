@@ -72,6 +72,7 @@ export declare class EmojiComponent implements OnChanges, Emoji, OnDestroy {
     private readonly emojiService;
     constructor();
     ngOnChanges(): boolean;
+    private isMissingAsset;
     ngOnDestroy(): void;
     getData(): EmojiData;
     getSanitizedData(): EmojiData;
