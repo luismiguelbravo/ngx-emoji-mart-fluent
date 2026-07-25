@@ -205,23 +205,29 @@ unifiedText?: string | null = null;
     // Verificamos si es una familia compleja con ZWJ que sabemos que no tiene asset
     const isComplexFamily = data.unified && data.unified.includes('200d');
 
-    if (data.unified && !isComplexFamily) {
-      const codigoUnificado = data.unified.toLowerCase();
-      this.fluentUrl = `assets/fluent-emoji/${codigoUnificado}.webp`;
-      this.isNative = false;
+    const fluentUrl = this.fluentEmojiUrl;
+    if (fluentUrl && !this.isMissingAsset(data.unified)) {
       this.style = {
         width: `${this.size}px`,
         height: `${this.size}px`,
         display: 'inline-block',
-        backgroundImage: `url(${this.fluentUrl})`,
+        backgroundImage: `url(${fluentUrl})`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
       };
-    } else {
-      // Fallback nativo inmediato para casos complejos
+    } else{
+      // --- FALLBACK NATIVO ---
+      // Si no hay webp local, mostramos el emoji nativo de texto con el tamaño correcto
       this.isNative = true;
-      this.fluentUrl = null;
+      this.style = {
+        fontSize: `${this.size}px`,
+        display: 'inline-block',
+        width: `${this.size}px`,
+        height: `${this.size}px`,
+        textAlign: 'center',
+        lineHeight: `${this.size}px`
+      };
     }
 
     return (this.isVisible = true);
