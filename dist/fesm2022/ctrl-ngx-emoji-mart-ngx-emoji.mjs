@@ -34145,7 +34145,7 @@ class EmojiComponent {
         this.label = [data.native].concat(data.shortNames).filter(Boolean).join(', ');
         // Verificamos si es una familia compleja con ZWJ que sabemos que no tiene asset
         const isComplexFamily = data.unified && data.unified.includes('200d');
-        if (data.unified && !isComplexFamily) {
+        if (data.unified && !isComplexFamily && !this.isMissingAsset(data.unified)) {
             const codigoUnificado = data.unified.toLowerCase();
             this.fluentUrl = `assets/fluent-emoji/${codigoUnificado}.webp`;
             this.isNative = false;
@@ -34194,8 +34194,9 @@ class EmojiComponent {
         if (missingAssets.has(lowerUnified)) {
             return true;
         }
+        return false;
         // Patrón genérico por si aparece alguna otra variante con ZWJ
-        return lowerUnified.includes('200d');
+        //return lowerUnified.includes('200d');
     }
     ngOnDestroy() {
         this.destroy$.next();
