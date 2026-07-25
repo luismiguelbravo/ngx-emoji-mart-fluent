@@ -56,10 +56,7 @@ export interface EmojiEvent {
         [class.emoji-mart-emoji-custom]="custom"
       >
         <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <img *ngIf="fluentEmojiUrl; else nativeTpl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
-          <ng-template #nativeTpl>
-            <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
-          </ng-template>
+          <img *ngIf="fluentEmojiUrl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
           <ng-content></ng-content>
         </span>
       </button>
@@ -75,10 +72,7 @@ export interface EmojiEvent {
         [class.emoji-mart-emoji-custom]="custom"
       >
         <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <img *ngIf="fluentEmojiUrl; else nativeSpanTpl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
-          <ng-template #nativeSpanTpl>
-            <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
-          </ng-template>
+          <img *ngIf="fluentEmojiUrl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
           <ng-content></ng-content>
         </span>
       </span>
