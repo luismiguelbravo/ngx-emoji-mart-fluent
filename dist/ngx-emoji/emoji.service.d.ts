@@ -3,6 +3,7 @@ import { Emoji } from './emoji.component';
 import * as i0 from "@angular/core";
 export declare const DEFAULT_BACKGROUNDFN: (set: string, sheetSize: number) => string;
 export declare class EmojiService {
+    getFluentEmojiUrl(unified?: string): string | null;
     uncompressed: boolean;
     names: {
         [key: string]: EmojiData;
@@ -12,12 +13,13 @@ export declare class EmojiService {
     uncompress(list: CompressedEmojiData[]): void;
     getData(emoji: EmojiData | string, skin?: Emoji['skin'], set?: Emoji['set']): EmojiData | null;
     unifiedToNative(unified: string): string;
-    emojiSpriteStyles(sheet: EmojiData['sheet'], set?: Emoji['set'], size?: Emoji['size'], sheetSize?: Emoji['sheetSize'], sheetRows?: Emoji['sheetRows'], backgroundImageFn?: Emoji['backgroundImageFn'], sheetColumns?: number, url?: string): {
+    emojiSpriteStyles(sheet: EmojiData['sheet'], set?: Emoji['set'], size?: Emoji['size'], sheetSize?: Emoji['sheetSize'], sheetRows?: Emoji['sheetRows'], backgroundImageFn?: Emoji['backgroundImageFn'], sheetColumns?: number, url?: string, unified?: string): {
         width: string;
         height: string;
         display: string;
         'background-image': string;
         'background-size': string;
+        'background-repeat': string;
         'background-position': string;
     };
     getSpritePosition(sheet: EmojiData['sheet'], sheetColumns: number): string;

@@ -25,6 +25,7 @@ export interface EmojiEvent {
 }
 export declare class EmojiComponent implements OnChanges, Emoji, OnDestroy {
     get fluentEmojiUrl(): string | null;
+    get fluentEmojiStyle(): any;
     skin: Emoji['skin'];
     set: Emoji['set'];
     sheetSize: Emoji['sheetSize'];

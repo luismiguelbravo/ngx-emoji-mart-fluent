@@ -33896,6 +33896,12 @@ const COLONS_REGEX = /^(?:\:([^\:]+)\:)(?:\:skin-tone-(\d)\:)?$/;
 const SKINS = ['1F3FA', '1F3FB', '1F3FC', '1F3FD', '1F3FE', '1F3FF'];
 const DEFAULT_BACKGROUNDFN = (set, sheetSize) => `https://cdn.jsdelivr.net/npm/emoji-datasource-${set}@14.0.0/img/${set}/sheets-256/${sheetSize}.png`;
 class EmojiService {
+    getFluentEmojiUrl(unified) {
+        if (!unified)
+            return null;
+        const codigoUnificado = unified.toLowerCase();
+        return `assets/fluent-emoji/${codigoUnificado}.webp`;
+    }
     uncompressed = false;
     names = {};
     emojis = [];
@@ -33993,16 +33999,20 @@ class EmojiService {
         const codePoints = unified.split('-').map(u => parseInt(`0x${u}`, 16));
         return String.fromCodePoint(...codePoints);
     }
-    emojiSpriteStyles(sheet, set = 'apple', size = 24, sheetSize = 64, sheetRows = 60, backgroundImageFn = DEFAULT_BACKGROUNDFN, sheetColumns = 61, url) {
-        const hasImageUrl = !!url;
-        url = url || backgroundImageFn(set, sheetSize);
+    emojiSpriteStyles(sheet, set = 'apple', size = 24, sheetSize = 64, sheetRows = 60, backgroundImageFn = DEFAULT_BACKGROUNDFN, sheetColumns = 61, url, unified) {
+        // Intentamos priorizar tu asset local si tenemos el código unificado
+        const localUrl = this.getFluentEmojiUrl(unified);
+        const finalUrl = localUrl || url || backgroundImageFn(set, sheetSize);
+        const hasLocal = !!localUrl;
+        const hasImageUrl = !!url || hasLocal;
         return {
             width: `${size}px`,
             height: `${size}px`,
             display: 'inline-block',
-            'background-image': `url(${url})`,
-            'background-size': hasImageUrl ? '100% 100%' : `${100 * sheetColumns}% ${100 * sheetRows}%`,
-            'background-position': hasImageUrl ? undefined : this.getSpritePosition(sheet, sheetColumns),
+            'background-image': `url(${finalUrl})`,
+            'background-size': hasLocal ? 'contain' : (hasImageUrl ? '100% 100%' : `${100 * sheetColumns}% ${100 * sheetRows}%`),
+            'background-repeat': hasLocal ? 'no-repeat' : undefined,
+            'background-position': hasLocal ? 'center' : (hasImageUrl ? undefined : this.getSpritePosition(sheet, sheetColumns)),
         };
     }
     getSpritePosition(sheet, sheetColumns) {
@@ -34033,6 +34043,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.5", ngImpor
             args: [{ providedIn: 'root' }]
         }], ctorParameters: function () { return []; } });
 
+// modificacion 7
 class EmojiComponent {
     get fluentEmojiUrl() {
         const data = this.getData();
@@ -34040,6 +34051,20 @@ class EmojiComponent {
             return null;
         const codigoUnificado = data.unified.toLowerCase();
         return `assets/fluent-emoji/${codigoUnificado}.webp`;
+    }
+    get fluentEmojiStyle() {
+        const url = this.fluentEmojiUrl;
+        if (!url)
+            return null;
+        return {
+            width: `${this.size}px`,
+            height: `${this.size}px`,
+            display: 'inline-block',
+            backgroundImage: `url(${url})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+        };
     }
     skin = 1;
     set = 'apple';
@@ -34117,7 +34142,19 @@ class EmojiComponent {
             return (this.isVisible = false);
         }
         this.label = [data.native].concat(data.shortNames).filter(Boolean).join(', ');
-        if (this.isNative && data.unified && data.native) {
+        const fluentUrl = this.fluentEmojiUrl;
+        if (fluentUrl) {
+            this.style = {
+                width: `${this.size}px`,
+                height: `${this.size}px`,
+                display: 'inline-block',
+                backgroundImage: `url(${fluentUrl})`,
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+            };
+        }
+        else if (this.isNative && data.unified && data.native) {
             // hide older emoji before the split into gendered emoji
             this.style = { fontSize: `${this.size}px` };
             if (this.forceSize) {
@@ -34160,7 +34197,7 @@ class EmojiComponent {
                 }
             }
             else {
-                this.style = this.emojiService.emojiSpriteStyles(data.sheet, this.set, this.size, this.sheetSize, this.sheetRows, this.backgroundImageFn, this.sheetColumns, this.imageUrlFn?.(this.getData()));
+                this.style = this.emojiService.emojiSpriteStyles(data.sheet, this.set, this.size, this.sheetSize, this.sheetRows, this.backgroundImageFn, this.sheetColumns, this.imageUrlFn?.(this.getData()), data.unified);
             }
         }
         return (this.isVisible = true);
@@ -34223,10 +34260,6 @@ class EmojiComponent {
         [class.emoji-mart-emoji-custom]="custom"
       >
         <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <img *ngIf="fluentEmojiUrl; else nativeTpl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
-          <ng-template #nativeTpl>
-            <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
-          </ng-template>
           <ng-content></ng-content>
         </span>
       </button>
@@ -34241,8 +34274,7 @@ class EmojiComponent {
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style">
-          <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
+        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
           <ng-content></ng-content>
         </span>
       </span>
@@ -34266,10 +34298,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.5", ngImpor
         [class.emoji-mart-emoji-custom]="custom"
       >
         <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-          <img *ngIf="fluentEmojiUrl; else nativeTpl" [src]="fluentEmojiUrl" alt="emoji 3d" style="width: 85%; height: 85%; object-fit: contain;" />
-          <ng-template #nativeTpl>
-            <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
-          </ng-template>
           <ng-content></ng-content>
         </span>
       </button>
@@ -34284,8 +34312,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.5", ngImpor
         [class.emoji-mart-emoji-native]="isNative"
         [class.emoji-mart-emoji-custom]="custom"
       >
-        <span [ngStyle]="style">
-          <ng-template [ngIf]="isNative">{{ unified }}</ng-template>
+        <span [ngStyle]="style" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
           <ng-content></ng-content>
         </span>
       </span>

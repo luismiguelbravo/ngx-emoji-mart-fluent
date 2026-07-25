@@ -251,6 +251,7 @@ export class EmojiComponent implements OnChanges, Emoji, OnDestroy {
           this.backgroundImageFn,
           this.sheetColumns,
           this.imageUrlFn?.(this.getData()),
+          data.unified
         );
       }
     }
