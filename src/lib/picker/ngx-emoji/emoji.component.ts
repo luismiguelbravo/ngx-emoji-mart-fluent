@@ -193,7 +193,7 @@ export class EmojiComponent implements OnChanges, Emoji, OnDestroy {
     this.label = [data.native].concat(data.shortNames).filter(Boolean).join(', ');
 
     const fluentUrl = this.fluentEmojiUrl;
-    if (fluentUrl) {
+    if (fluentUrl && !this.isMissingAsset(data.unified)) {
       this.style = {
         width: `${this.size}px`,
         height: `${this.size}px`,
@@ -203,60 +203,34 @@ export class EmojiComponent implements OnChanges, Emoji, OnDestroy {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
       };
-    } else if (this.isNative && data.unified && data.native) {
-      // hide older emoji before the split into gendered emoji
-      this.style = { fontSize: `${this.size}px` };
-
-      if (this.forceSize) {
-        this.style.display = 'inline-block';
-        this.style.width = `${this.size}px`;
-        this.style.height = `${this.size}px`;
-        this.style['word-break'] = 'keep-all';
-      }
-    } else if (data.custom) {
+    } else{
+      // --- FALLBACK NATIVO ---
+      // Si no hay webp local, mostramos el emoji nativo de texto con el tamaño correcto
+      this.isNative = true;
       this.style = {
+        fontSize: `${this.size}px`,
+        display: 'inline-block',
         width: `${this.size}px`,
         height: `${this.size}px`,
-        display: 'inline-block',
+        textAlign: 'center',
+        lineHeight: `${this.size}px`
       };
-      if (data.spriteUrl && this.sheetRows && this.sheetColumns) {
-        this.style = {
-          ...this.style,
-          backgroundImage: `url(${data.spriteUrl})`,
-          backgroundSize: `${100 * this.sheetColumns}% ${100 * this.sheetRows}%`,
-          backgroundPosition: this.emojiService.getSpritePosition(data.sheet, this.sheetColumns),
-        };
-      } else {
-        this.style = {
-          ...this.style,
-          backgroundImage: `url(${data.imageUrl})`,
-          backgroundSize: 'contain',
-        };
-      }
-    } else {
-      if (data.hidden.length && data.hidden.includes(this.set)) {
-        if (this.fallback) {
-          this.style = { fontSize: `${this.size}px` };
-          this.unified = this.fallback(data, this);
-        } else {
-          return (this.isVisible = false);
-        }
-      } else {
-        this.style = this.emojiService.emojiSpriteStyles(
-          data.sheet,
-          this.set,
-          this.size,
-          this.sheetSize,
-          this.sheetRows,
-          this.backgroundImageFn,
-          this.sheetColumns,
-          this.imageUrlFn?.(this.getData()),
-          data.unified
-        );
-      }
     }
     return (this.isVisible = true);
   }
+
+  private isMissingAsset(unified?: string): boolean {
+    if (!unified) return true;
+
+    // Las secuencias complejas de familias con ZWJ (como man-man-girl-boy)
+    // o unificados muy largos que superen cierta complejidad suelen fallar.
+    // También puedes incluir un listado manual si lo prefieres.
+    const isComplexFamily = unified.includes('200d');
+    const isFlag = unified.startsWith('1f1e6') || unified.includes('-1f1');
+
+    return isComplexFamily || isFlag;
+  }
+
 
   ngOnDestroy(): void {
     this.destroy$.next();
